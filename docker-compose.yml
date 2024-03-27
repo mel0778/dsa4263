@@ -1,0 +1,63 @@
+version: "3.9"
+services:
+
+  rust-instance:
+      hostname: rustservice
+      container_name: rustservice
+      build:
+          context: .
+          dockerfile: .devcontainer/rust-container/Dockerfile
+          args:
+            - VARIANT=${RUST_VARIANT}
+      volumes:
+        # Mount the root folder that contains .git
+        - .:/workspace:cached
+      #user: ${UBUNTU_USER}
+      command: sleep infinity
+      networks:
+        - bridge-net
+      links:
+        - "scylla-db:database"
+
+  python-instance:
+      hostname: pythonservice
+      container_name: pythonservice
+      build:
+        context: .
+        dockerfile: .devcontainer/python-container/Dockerfile
+      volumes:
+        # Mount the root folder that contains .git
+        - .:/workspace:cached
+      command: sleep infinity
+      networks:
+        - bridge-net
+      links:
+        - "scylla-db:database"
+
+  scylla-db:
+    hostname: scyllaservice
+    container_name: scyllaservice
+    image: "scylladb/scylla"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBIT_User}
+      - RABBITMQ_DEFAULT_PASS=${RABBIT_Pass}
+    ports:
+      - ${Syclla_Mainport}:9042
+      - 7000:7000
+      - 7001:7001
+      - 7199:7199
+      - 9180:9180
+      - 9160:9160
+      - 10000:10000
+    networks:
+      - bridge-net
+
+
+
+
+networks:
+  bridge-net:
+    name: bridge_network
+    driver: bridge
+
+
