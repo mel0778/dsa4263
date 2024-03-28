@@ -1,24 +1,6 @@
 version: "3.9"
 services:
 
-  rust-instance:
-      hostname: rustservice
-      container_name: rustservice
-      build:
-          context: .
-          dockerfile: .devcontainer/rust-container/Dockerfile
-          args:
-            - VARIANT=${RUST_VARIANT}
-      volumes:
-        # Mount the root folder that contains .git
-        - .:/workspace:cached
-      #user: ${UBUNTU_USER}
-      command: sleep infinity
-      networks:
-        - bridge-net
-      links:
-        - "scylla-db:database"
-
   python-instance:
       hostname: pythonservice
       container_name: pythonservice
@@ -31,26 +13,50 @@ services:
       command: sleep infinity
       networks:
         - bridge-net
-      links:
-        - "scylla-db:database"
+        
+  dataimporter-instance:
+      hostname: dataimporterservice
+      container_name: dataimporterservice
+      build:
+        context: .
+        dockerfile: .devcontainer/dataimporter-container/Dockerfile
+      volumes:
+        # Mount the root folder that contains .git
+        - .:/workspace:cached
+      command: sleep infinity
+      networks:
+        - bridge-net
 
-  scylla-db:
-    hostname: scyllaservice
-    container_name: scyllaservice
-    image: "scylladb/scylla"
-    environment:
-      - RABBITMQ_DEFAULT_USER=${RABBIT_User}
-      - RABBITMQ_DEFAULT_PASS=${RABBIT_Pass}
+  database:
+    hostname: postgresdb
+    container_name: postgresdb
+    image: 'postgres:latest'
     ports:
-      - ${Syclla_Mainport}:9042
-      - 7000:7000
-      - 7001:7001
-      - 7199:7199
-      - 9180:9180
-      - 9160:9160
-      - 10000:10000
+      - 15432:5432
+    env_file:
+      - .env
     networks:
       - bridge-net
+    volumes:
+      - .postgresDATA/db-data/:/var/lib/postgresql/data/
+
+  
+  pgadmin:
+    hostname: postgresadmin
+    container_name: postgresadmin
+    image: dpage/pgadmin4
+    ports:
+      - 15433:80
+    env_file:
+      - .env
+    depends_on:
+      - database
+    networks:
+      - bridge-net
+    volumes:
+      - .postgresDATA/pgadmin-data/:/var/lib/pgadmin/
+ 
+
 
 
 
