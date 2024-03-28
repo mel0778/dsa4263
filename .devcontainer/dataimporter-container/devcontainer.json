@@ -4,11 +4,6 @@
     "service": "dataimporter-instance",
     // Configure tool-specific properties.
 	"customizations": {
-		"codespaces": {
-			"openFiles": [
-			  "materials/fa22/project/project1/project1.ipynb"
-			]
-		},
 		"vscode": {
 			"settings": {
 				"python.defaultInterpreterPath": "/usr/local/bin/python",
