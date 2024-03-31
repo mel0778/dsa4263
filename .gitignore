@@ -1,3 +1,4 @@
-*.DS_Store
+.DS_Store
 .Rhistory
 data/
+data/.DS_Store
