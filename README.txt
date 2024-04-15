@@ -47,7 +47,6 @@ We constructed a novel iterative ensemble method that leverages the use of confi
 └── python_scripts
     └── data
         └── make_dataset.py
-
 ```
 ### Installing Dependencies
 
