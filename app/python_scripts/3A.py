@@ -61,8 +61,6 @@ y = fds.malicious
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42)
 
-print("Train Labels before Resampling")
-print(Counter(y_train))
 
 # %% [markdown]
 # **Feature Normalisation**
@@ -97,14 +95,10 @@ param_grid = {
 grid_search = GridSearchCV(dt, param_grid)
 grid_search.fit(X_train_scaled, y_train)
 
-# Print the best hyperparameters and corresponding score
-print("Best Hyperparameters:", grid_search.best_params_)
-print("Best Score:", grid_search.best_score_)
 
 # Evaluate the best model on the test set
 best_dt = grid_search.best_estimator_
 test_score = best_dt.score(X_test_scaled, y_test)
-print("Test Set Score:", test_score)
 
 
 # %% [markdown]
@@ -115,18 +109,15 @@ print("Test Set Score:", test_score)
 best_dt.fit(X_train_scaled, y_train)
 y_pred = best_dt.predict(X_test_scaled)
 accuracy = accuracy_score(y_test, y_pred)
-print("Accuracy: {:.2f}%".format(accuracy * 100))
-print("Precision = {:.2f}%".format(precision_score(y_test, y_pred)*100))
-print("Recall = {:.2f}%".format(recall_score(y_test, y_pred)*100))
-print("f-1 score = {:.2f}%".format(f1_score(y_test, y_pred)*100))
+
 cm = confusion_matrix(y_test, y_pred)
 disp = ConfusionMatrixDisplay(
     confusion_matrix=cm, display_labels=['Normal', 'Malicious'])
-print("\nClassification Report:\n", classification_report(y_test, y_pred))
+
 disp.plot(cmap=plt.cm.Purples)
 plt.title('Decision Tree Confusion Matrix (Without SMOTE)')
 plt.savefig(dt_confusion_matrix_path)
-plt.show()
+
 
 # %%
 # ROC - AUC
@@ -149,28 +140,18 @@ def plot_roc_curve(true_y, y_prob):
              label='ROC curve (area = %0.4f)' % roc_auc)
     plt.legend(loc="lower right")
 
-    # plt.legend()
-
 
 plot_roc_curve(y_test, y_pred)
-print(f'AUC score: {roc_auc_score(y_test, y_pred)}')
 
-# %% [markdown]
-# **Feature Importance**
 
-# %%
 feat_importances = pd.DataFrame(
     best_dt.feature_importances_, index=X_train.columns, columns=["Importance"])
 feat_importances.sort_values(by='Importance', ascending=False, inplace=True)
 feat_importances.plot(kind='bar', figsize=(8, 6), color="purple")
 plt.title('Decision Tree Feature Importance (Without SMOTE)')
 plt.savefig(dt_feature_importance_path)
-plt.show()
 
-# %% [markdown]
-# **Visualise Graph**
 
-# %%
 fig = plt.figure(figsize=(25, 20))
 _ = tree.plot_tree(best_dt,
                    feature_names=X_train.columns.tolist(),
@@ -178,14 +159,6 @@ _ = tree.plot_tree(best_dt,
                    filled=True)
 plt.title('Decision Tree Visualisation (Without SMOTE)')
 plt.savefig(dt_visualisation_path)
-plt.show()
-
-# %% [markdown]
-# **Confidence Score: Using Gini**
-# - A higher impurity indicates a higher risk or uncertainty in the classification decision made by that node. Hence, lower confidence score
-# - Sum Gini at nodes in decision path, weighted according to number of samples in a node
-
-# %%
 
 
 def get_decision_paths(clf, X):
@@ -224,7 +197,6 @@ def get_confidence_score(clf, decision_paths):
     return confidence_scores
 
 
-# %%
 train_decision_paths = get_decision_paths(best_dt, X_train_scaled)
 test_decision_paths = get_decision_paths(best_dt, X_test_scaled)
 
@@ -240,7 +212,7 @@ plt.ylabel('Frequency')
 plt.title('Decision Tree Histogram of Train Data Confidence Scores')
 plt.grid(True)
 plt.savefig(dt_train_confidence_score_path)
-plt.show()
+
 
 plt.hist(test_confidence_scores, bins=30, edgecolor='black',
          color="purple")  # Adjust bins as needed
@@ -249,29 +221,15 @@ plt.ylabel('Frequency')
 plt.title('Decision Tree Histogram of Test Data Confidence Scores')
 plt.grid(True)
 plt.savefig(dt_test_confidence_score_path)
-plt.show()
 
-# %% [markdown]
-# # Export Model
 
-# %%
 pickle.dump(best_dt, open(model_dump_path, 'wb'))
-
-# %% [markdown]
-# #  Our Prediction and the Confidence Associated with it
-
-# %% [markdown]
-# ## Helper Functions
-
-# %%
 
 
 def df_toparquet(pdf, path):
     ddf = dd.from_pandas(pdf)
     # Export the DataFrame to a parquet file=
     ddf.to_parquet(path, engine='pyarrow')
-
-# %%
 
 
 def refactored_dataset(df):
@@ -301,29 +259,9 @@ refactored_df = refactored_dataset(X_test)
 df_toparquet(refactored_df, minority_users_dt_pq)
 refactored_df
 
-# %% [markdown]
-# **Study Minority Instances**
-# - TP / FN / FP
-
-# %% [markdown]
-# Get data of minority users
-
-# %%
-
 
 def get_minority_tables(y_pred_value, y_test_value, df):
     # Get rows of minority data
     minority_data = df[(df['Actual'] == y_test_value) &
                        (df['Prediction'] == y_pred_value)]
     display(minority_data)
-
-
-# %%
-print("False Positives")
-get_minority_tables(1, 0, refactored_df)
-
-print("False Negatives")
-get_minority_tables(0, 1, refactored_df)
-
-print("True Positives")
-get_minority_tables(1, 1, refactored_df)
