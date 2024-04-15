@@ -19,13 +19,15 @@ To utilize this Docker configuration effectively, follow these steps:
 
 1. **Clone the Repository**: Start by cloning this repository to your local machine.
 
-`git clone <repo link>`
+```git clone <repo link>```
 
 2 . Switch to Docker Branch: Move to the Docker branch of the repository.
-`git checkout docker`
+
+```git checkout docker```
 
 3.  **Build Docker Image**: Build the Docker image using the provided Docker Compose file.
-    `docker compose up`
+
+```docker compose up```
 
 ## Notes
 
