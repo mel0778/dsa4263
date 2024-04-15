@@ -1,7 +1,2 @@
-data/
+legacy_data/
 !app/data/processed/*/
-app/data/raw_external/*/
-app/models/models/*/
-
-
-
