@@ -1,14 +1,23 @@
 # Use a Python base image
-FROM python:3.9
+FROM python:3.10
 
-# Set working directory in the container
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy all files from the python_scripts directory to the working directory in the container
-COPY ./python_scripts /app
+# Copy the contents of the local app directory to the working directory in the container
+COPY ./app /app
 
-# Install any dependencies required for the Python scripts
+# Install any needed dependencies specified in requirements.txt (if any)
 RUN pip install -r requirements.txt
 
-# Run the Python files in parallel then sequentially
-CMD ["sh", "-c", "python 3A.py & python 3B.py & python 3C.py & python 3D.py & python 3E.py & python 3F.py & python 3G.py && python 4.py && python 5.py"]
+# Define the commands to run the Python scripts in parallel and then sequentially
+CMD ["bash", "-c", "python /app/python_scripts/3A.py && \
+    python /app/python_scripts/3B.py && \
+    python /app/python_scripts/3C.py && \
+    python /app/python_scripts/3D.py && \
+    python /app/python_scripts/3E.py && \
+    python /app/python_scripts/3F.py && \
+    wait && \
+    python /app/python_scripts/3G.py && \
+    python /app/python_scripts/4.py && \
+    python /app/python_scripts/5.py"]

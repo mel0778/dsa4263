@@ -49,7 +49,6 @@ dt_test_confidence_score_path = os.path.join(
 # %%
 # Read the multi-part Parquet dataset
 fds = pd.read_parquet(final_dataset_path)
-fds.head(4000)
 
 # %% [markdown]
 # # Decision Tree / Random Forest
