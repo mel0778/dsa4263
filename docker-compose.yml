@@ -1,7 +1,22 @@
-version: '3'
-
+version: "3.9"
 services:
-  myapp:
-    build: .
-    volumes:
-      - ./app:/app
+
+  python-instance:
+      hostname: pythonservice
+      container_name: pythonservice
+      build:
+        context: .
+        dockerfile: .devcontainer/python-container/Dockerfile
+      volumes:
+        # Mount the root folder that contains .git
+        - .:/workspace:cached
+      command: sleep infinity
+      networks:
+        - bridge-net
+        
+networks:
+  bridge-net:
+    name: bridge_network
+    driver: bridge
+
+

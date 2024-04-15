@@ -1,0 +1,24 @@
+{
+    "name": "Python Container",
+    "dockerComposeFile": ["../../docker-compose.yml"],
+    "service": "python-instance",
+    // Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"python.defaultInterpreterPath": "/usr/bin/python",
+				"workbench.editorAssociations": {
+					"*.ipynb": "jupyter-notebook"
+				},
+				"notebook.compactView": false
+			},
+			"extensions": [
+				"ms-python.python",
+				"ms-toolsai.jupyter",
+				"MS-vsliveshare.vsliveshare"
+			]
+		}
+	},
+    "shutdownAction": "none",
+    "workspaceFolder": "/workspace/app"
+  }

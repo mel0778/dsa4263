@@ -1,2 +1,6 @@
-legacy_data/
-!app/data/processed/*/
+.env
+references.txt
+.postgresDATA
+dataimporter-src/Datar52/*
+!/dataimporter-src/Datar52/feature_extract.ipynb
+legacy_data
