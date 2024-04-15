@@ -189,7 +189,7 @@ threshold = threshold_tuning(
     y_test, best_y_pred_prob, tp_weight=2, fp_weight=1, fn_weight=0.5, threshold=1)
 
 y_pred = (best_y_pred_prob > threshold).astype(int)
-model_weights = [best_permutation, threshold]
-pickle.dump(model.weights, open(model_dump_path, 'wb'))
+model_weights = [threshold]
+pickle.dump(model_weights, open(model_dump_path, 'wb'))
 
 print('COMPLETED')

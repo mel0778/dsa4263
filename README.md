@@ -6,11 +6,12 @@ This branch contains Docker configurations tailored for specific tasks related t
 
 ## Purpose
 
-The primary objective of this Docker setup is to streamline the process of exporting model weights. It's optimized for these tasks rather than exploratory data analysis (EDA), which we believe is better suited for notebook environments or development containers.
+The primary objective of this Docker setup is to streamline the process of exporting model weights. It's optimized for these tasks rather than exploratory data analysis (EDA), which we believe is better suited for notebook environments (refer to prod branch for this).
 
 ## Contents
 
 - **Processed Data Files**: We've retained processed data files within this branch. These files are relatively smaller in size, enabling faster loading and extraction compared to the entire dataset.
+- **Python Scripts for Models**: Can be found in python_scripts but to understand what is happening step by step it is best to refer to prod branch.
 
 ## Usage
 
@@ -18,12 +19,13 @@ To utilize this Docker configuration effectively, follow these steps:
 
 1. **Clone the Repository**: Start by cloning this repository to your local machine.
 
-`git clone https://github.com/mel0778/dsa4263.git`
+`git clone <repo link>`
 
 2 . Switch to Docker Branch: Move to the Docker branch of the repository.
 `git checkout docker`
 
-3.  **Build Docker Image**: Build the Docker image using the provided Dockerfile.
+3.  **Build Docker Image**: Build the Docker image using the provided Docker Compose file.
+    `docker compose up`
 
 ## Notes
 
