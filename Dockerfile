@@ -11,11 +11,11 @@ COPY ./app /app
 RUN pip3 install -r requirements.txt
 
 # Define the commands to run the Python scripts in parallel and then sequentially
-CMD ["bash", "-c", "python3 -W ignore 3A.py &\
-    python3 -W ignore 3B.py &\
-    python3 -W ignore 3C.py &\
-    python3 -W ignore 3D.py &\
-    python3 -W ignore 3E.py &\
-    python3 -W ignore 3F.py &\
+CMD ["bash", "-c", "python3 -W ignore python_scripts/3A.py &\
+    python3 -W ignore python_scripts/3B.py &\
+    python3 -W ignore python_scripts/3C.py &\
+    python3 -W ignore python_scripts/3D.py &\
+    python3 -W ignore python_scripts/3E.py &\
+    python3 -W ignore python_scripts/3F.py &\
     wait && \
-    python3 -W ignore 3G.py"]
+    python3 -W ignore python_scripts/3G.py"]
