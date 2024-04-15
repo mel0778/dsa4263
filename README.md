@@ -21,6 +21,7 @@ threat detection.
 We constructed a novel iterative ensemble method that leverages the use of confidence scoring metrics to generate final predictions unlike most industry solutions, which only flag and provide a binary outcome regarding malicious behaviour. This yields a new paradigm regarding such problems as we can dynamically readjust FP, FN and TP via tuning a ensemble and threshold parameter.
 
 ### Git Repository Structure
+```
 .
 ├── data
 │   ├── processed
@@ -46,7 +47,7 @@ We constructed a novel iterative ensemble method that leverages the use of confi
 └── python_scripts
     └── data
         └── make_dataset.py
-
+```
 
 ### Installing Dependencies
 
