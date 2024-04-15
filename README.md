@@ -78,29 +78,29 @@ For instructions on using Docker to run our models and export model weights effi
 cd /dsa4263/python_scripts/data 
 python make_dataset.py
 ```
-2. Run jupyter notebooks in /dsa4263/notebooks
+2. Run jupyter notebooks in /dsa4263/notebooks in the following order
 
-1_EDA_RawData.ipynb - Initial exploratory data analysis on the raw data
-
-2A_Feature_Extract.ipynb - Notebook for feature extraction from the data
-
-2B_EDA_Post_FE.ipynb - Exploratory data analysis on post feature extraction data
-
-3A_model_DT.ipynb - Decision Tree model
-
-3B_model_DT_smote.ipynb - Decision Tree model with SMOTE oversampling
-
-3C_model_SVM.ipynb - Support Vector Machine model
-
-3D_model_SVM_smote.ipynb - SVM model with SMOTE oversampling
-
-3E_model_NN.ipynb - Neural Network model
-
-3F_model_NN_smote.ipynb - Neural Network with SMOTE oversampling
-
-3G_Ensemble_Model.ipynb - Ensemble model combining various models
-
-4_Model_Comparisons.ipynb - Comparisons between different models 
-
-5_EDA_Post_Models.ipynb - EDA after model building
+    1_EDA_RawData.ipynb - Initial exploratory data analysis on the raw data
+    
+    2A_Feature_Extract.ipynb - Notebook for feature extraction from the data
+    
+    2B_EDA_Post_FE.ipynb - Exploratory data analysis on post feature extraction data
+    
+    3A_model_DT.ipynb - Decision Tree model
+    
+    3B_model_DT_smote.ipynb - Decision Tree model with SMOTE oversampling
+    
+    3C_model_SVM.ipynb - Support Vector Machine model
+    
+    3D_model_SVM_smote.ipynb - SVM model with SMOTE oversampling
+    
+    3E_model_NN.ipynb - Neural Network model
+    
+    3F_model_NN_smote.ipynb - Neural Network with SMOTE oversampling
+    
+    3G_Ensemble_Model.ipynb - Ensemble model combining various models
+    
+    4_Model_Comparisons.ipynb - Comparisons between different models 
+    
+    5_EDA_Post_Models.ipynb - EDA after model building
 
