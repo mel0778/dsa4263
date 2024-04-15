@@ -17,5 +17,4 @@ CMD ["bash", "-c", "python3 -W ignore python_scripts/3A.py &\
     python3 -W ignore python_scripts/3D.py &\
     python3 -W ignore python_scripts/3E.py &\
     python3 -W ignore python_scripts/3F.py &\
-    wait && \
     python3 -W ignore python_scripts/3G.py"]
