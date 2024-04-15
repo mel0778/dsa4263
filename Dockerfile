@@ -11,7 +11,7 @@ COPY ./app /app
 RUN pip3 install -r requirements.txt
 
 # Define the commands to run the Python scripts in parallel and then sequentially
-CMD ["bash", "-c", "cd /app/python_scripts && \
+CMD ["bash", "-c", "cd python_scripts && \
     python3 3A.py & \
     python3 3B.py & \
     python3 3C.py & \
