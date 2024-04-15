@@ -8,16 +8,15 @@ WORKDIR /app
 COPY ./app /app
 
 # Install any needed dependencies specified in requirements.txt (if any)
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 # Define the commands to run the Python scripts in parallel and then sequentially
-CMD ["bash", "-c", "python /app/python_scripts/3A.py && \
-    python /app/python_scripts/3B.py && \
-    python /app/python_scripts/3C.py && \
-    python /app/python_scripts/3D.py && \
-    python /app/python_scripts/3E.py && \
-    python /app/python_scripts/3F.py && \
+CMD ["bash", "-c", "cd /app/python_scripts && \
+    python3 3A.py & \
+    python3 3B.py & \
+    python3 3C.py & \
+    python3 3D.py & \
+    python3 3E.py & \
+    python3 3F.py & \
     wait && \
-    python /app/python_scripts/3G.py && \
-    python /app/python_scripts/4.py && \
-    python /app/python_scripts/5.py"]
+    python3 3G.py &&"]
