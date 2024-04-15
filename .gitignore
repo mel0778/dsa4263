@@ -1,5 +1,6 @@
 !data/processed/*/
 data/raw_external/*/
-models/models/*
-!models/models/.gitignore
+models/models/*/
+
+
 
