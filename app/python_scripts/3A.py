@@ -18,13 +18,13 @@ from sklearn import tree
 from sklearn.preprocessing import MinMaxScaler
 import pickle
 
-processed_dir = os.path.join("..", "data", "processed")
+processed_dir = os.path.join("data", "processed")
 final_dataset_path = os.path.join(
     processed_dir, 'FEData_For_Modelling.parquet')
 minority_users_dt_pq = os.path.join(processed_dir, 'minority_users_dt.parquet')
 
 # Model
-models_dir = os.path.join("..", "models", "models")
+models_dir = os.path.join("models", "models")
 model_dump_path = os.path.join(models_dir, 'dt_model.pkl')
 
 
@@ -91,3 +91,4 @@ test_score = best_dt.score(X_test_scaled, y_test)
 # Evaluate the model
 best_dt.fit(X_train_scaled, y_train)
 pickle.dump(best_dt, open(model_dump_path, 'wb'))
+print('COMPLETED')

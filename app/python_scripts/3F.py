@@ -26,28 +26,14 @@ import pickle
 
 tf.keras.utils.set_random_seed(42)
 
-processed_dir = os.path.join("..", "data", "processed")
+processed_dir = os.path.join("data", "processed")
 final_dataset_path = os.path.join(
     processed_dir, 'FEData_For_Modelling.parquet')
 minority_users_nn_pq = os.path.join(
     processed_dir, 'minority_users_nn_smote.parquet')
 
-models_dir = os.path.join("..", "models", "models")
+models_dir = os.path.join("models", "models")
 model_dump_path = os.path.join(models_dir, 'nn_model_smote.pkl')
-
-figures_dir = os.path.join("..", "materials", "reports", "figures", "3F")
-
-nn_smote_loss_plot_path = os.path.join(figures_dir, 'nn_loss_plot.png')
-nn_smote_acc_plot_path = os.path.join(figures_dir, 'nn_acc_plot.png')
-
-nn_smote_confusion_matrix_path = os.path.join(
-    figures_dir, 'nn_confusion_matrix.png')
-
-nn_smote_train_confidence_score_path = os.path.join(
-    figures_dir, 'nn_train_confidence_score.png')
-nn_smote_test_confidence_score_path = os.path.join(
-    figures_dir, 'nn_test_confidence_score.png')
-
 # Read the multi-part Parquet dataset
 fds = dd.read_parquet(final_dataset_path)
 fds['malicious'] = fds['malicious'].astype(int)
@@ -143,3 +129,4 @@ history = model.fit(X_train, y_train,
                     )
 
 pickle.dump(model.weights, open(model_dump_path, 'wb'))
+print('COMPLETED')

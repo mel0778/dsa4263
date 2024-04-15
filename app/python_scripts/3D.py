@@ -12,16 +12,14 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
 import pickle
 
-processed_dir = os.path.join("..", "data", "processed")
+processed_dir = os.path.join("data", "processed")
 final_dataset_path = os.path.join(
     processed_dir, 'FEData_For_Modelling.parquet')
 minority_users_svm_pq = os.path.join(
     processed_dir, 'minority_users_svm_smote.parquet')
 
-figures_dir = figures_dir = os.path.join(
-    "..", "materials", "reports", "figures", "3D")
 
-models_dir = os.path.join("..", "models", "models")
+models_dir = os.path.join("models", "models")
 model_dump_path = os.path.join(models_dir, 'svm_model_smote.pkl')
 
 # Read the multi-part Parquet dataset
@@ -79,5 +77,4 @@ grid.fit(X_train_scaled, y_train_gs)
 
 best_clf = grid
 pickle.dump(best_clf, open(model_dump_path, 'wb'))
-
-
+print('COMPLETED')

@@ -13,7 +13,7 @@ import pandas as pd
 # # Paths
 
 # %%
-processed_dir = os.path.join("..", "data", "processed")
+processed_dir = os.path.join("data", "processed")
 
 final_dataset_path = os.path.join(
     processed_dir, 'FEData_For_Modelling.parquet')
@@ -35,7 +35,7 @@ minority_users_em_pq = os.path.join(
     processed_dir, 'minority_users_em_pq.parquet')
 
 
-models_dir = os.path.join("..", "models", "models")
+models_dir = os.path.join("models", "models")
 model_dump_path = os.path.join(models_dir, 'em_model.pkl')
 
 # Import Dataset
@@ -190,3 +190,5 @@ threshold = threshold_tuning(
 y_pred = (best_y_pred_prob > threshold).astype(int)
 model_weights = [best_permutation, threshold]
 pickle.dump(model.weights, open(model_dump_path, 'wb'))
+
+print('COMPLETED')
