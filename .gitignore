@@ -1,6 +1,7 @@
-!data/processed/*/
-data/raw_external/*/
-models/models/*/
+data/
+!app/data/processed/*/
+app/data/raw_external/*/
+app/models/models/*/
 
 
 

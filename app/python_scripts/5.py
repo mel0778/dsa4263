@@ -1,6 +1,5 @@
 # %%
 # Imports
-from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -171,62 +170,8 @@ print(loadings_nonmalicious_df)
 
 # %%
 df = data.copy()
-
-# %% [markdown]
-# Code below takes 1h to run, use G_highimportancePCAfeatures.pickle
-
-# %%
-# Selecting the high importance features from PCA
 high_importance_features = ['FCwke', 'CDwke', 'JDwke', 'SDowh',
                             'SDwh', 'C', 'CDowh', 'CDwh', 'JDowh', 'FCowh', 'N', 'FCwh', 'A']
-
-# Create a new DataFrame with only the high importance features
-high_importance_df = df[high_importance_features]
-
-# Create a network graph
-G_highimportancePCAfeatures = nx.Graph()
-
-# Add nodes with color attribute based on maliciousness
-node_color_map = {0: 'blue', 1: 'red'}
-for i, row in df.iterrows():
-    G_highimportancePCAfeatures.add_node(
-        row['user'], color=node_color_map[row['malicious']])
-
-# Adding edges between users based on similarity in high importance features
-for i, row in high_importance_df.iterrows():
-    print(i)
-    for j in range(i+1, len(high_importance_df)):
-        row2 = high_importance_df.iloc[j]
-        similarity = sum(abs(row - row2))  # Manhattan distance
-        if similarity < 20:  # Adjust threshold as needed
-            G_highimportancePCAfeatures.add_edge(
-                df.iloc[i]['user'], df.iloc[j]['user'], weight=similarity)
-
-pickle.dump(G_highimportancePCAfeatures, open(
-    highimportancepcafeatures_path, 'wb'))
-
-# %%
-G_highimportancePCAfeatures = pickle.load(
-    open(highimportancepcafeatures_path, 'rb'))
-malicious_node_size = 600  # Larger size for visibility
-default_node_size = 3
-node_colors = [G_highimportancePCAfeatures.nodes[n]['color']
-               for n in G_highimportancePCAfeatures.nodes()]
-node_sizes = [malicious_node_size if data['color'] == 'red' else default_node_size for _,
-              data in G_highimportancePCAfeatures.nodes(data=True)]
-
-plt.figure(figsize=(12, 8))
-pos = nx.spring_layout(G_highimportancePCAfeatures, k=0.3, iterations=50)
-nx.draw_networkx_nodes(G_highimportancePCAfeatures, pos,
-                       node_color=node_colors, node_size=node_sizes, alpha=0.9)
-nx.draw_networkx_edges(G_highimportancePCAfeatures, pos, alpha=0.3, width=0.5)
-malicious_labels = {n: n if d['color'] == 'red' else '' for n,
-                    d in G_highimportancePCAfeatures.nodes(data=True)}
-nx.draw_networkx_labels(G_highimportancePCAfeatures, pos,
-                        labels=malicious_labels, font_size=12, font_color='white')
-
-plt.title('User Interaction Network')
-plt.show()
 
 # %% [markdown]
 # # Analysis of Post Model Results
@@ -386,255 +331,41 @@ plt.savefig(FP_Analysis_Boxplots_path)
 plt.show()
 
 # %% [markdown]
-# # ARCHIVE
+# ## Insights
+# ## 1. High False Positives (FP) vs. Malicious Users
+# Identifying why high false positives (FP) are misclassified as malicious by comparing activity patterns.
 #
-
-# %%
-malicious_node_size = 600  # Larger size for visibility
-default_node_size = 3
-node_colors = [G.nodes[n]['color'] for n in G.nodes()]
-node_sizes = [malicious_node_size if data['color'] ==
-              'red' else default_node_size for _, data in G.nodes(data=True)]
-
-plt.figure(figsize=(12, 8))
-
-# Generate a spring layout with increased space between nodes
-# Adjust k and iterations for better spacing
-pos = nx.spring_layout(G, k=0.3, iterations=50)
-
-# Draw nodes with higher opacity for visibility
-nx.draw_networkx_nodes(G, pos, node_color=node_colors,
-                       node_size=node_sizes, alpha=0.9)
-
-# Draw edges with reduced width and transparency
-nx.draw_networkx_edges(G, pos, alpha=0.3, width=0.5)
-
-# Draw labels for malicious nodes with a larger font size and white font color for visibility
-malicious_labels = {n: n if d['color'] ==
-                    'red' else '' for n, d in G.nodes(data=True)}
-nx.draw_networkx_labels(G, pos, labels=malicious_labels,
-                        font_size=12, font_color='white')
-
-# Add a title and show the plot without axis for a cleaner look
-plt.title('User Interaction Network')
-# plt.axis('off')  # Hide the axis for a neater presentation
-plt.show()
-
-# %% [markdown]
-# One user TNB1616 was always classified as a false negative for all 6 models.
-
-# %%
-# Decision Tree
-print(dt_data[dt_data["User"] == "TNB1616"])
-
-print(dt_data[(dt_data["Actual"] == True) & (dt_data["Prediction"] == False)])
-
-print("\n Number of instances with the same decision path: " +
-      str(len(dt_data[dt_data["Decision Path"] == "[0, 1, 2, 4]"])))
-
-
-# %% [markdown]
-# For DT, seems like 3/4 of our true positives have the same decision path. and in the whole dataset 59 of the
-
-# %%
-# Decision Tree
-print(smote_dt_data[smote_dt_data["User"] == "TNB1616"])
-
-print(smote_dt_data[(smote_dt_data["Actual"] == True)
-      & (smote_dt_data["Prediction"] == False)])
-
-print("\n Number of instances with the same decision path: " +
-      str(len(smote_dt_data[smote_dt_data["Decision Path"] == "[0, 1, 2]"])))
-
-# %% [markdown]
-# For decision tree we can investigate the model by looking at the deicsion path. We see that the decision path is the same for both false negatives. However there are 322 instances in the dataset with the same decision path.
-
-# %%
-G = nx.Graph()
-
-# Add nodes with attributes for high and low false positives
-for index, row in fds.iterrows():  # Assuming 'fds' is your DataFrame with user data
-    G.add_node(row['User'],
-               size=row['fp']*300 + 100,  # Base size + scaled by FP score
-               fp=row['fp'],
-               # Red for high FP, green for low FP
-               color='red' if row['fp'] >= 1 else 'green')
-
-# Add edges randomly for demonstration (You might want to use actual relationships)
-users = list(fds['User'])
-for user in users:
-    if random.random() > 0.95:  # Creating a sparse graph
-        G.add_edge(user, random.choice(users))
-
-# Set node positions using the Shell layout
-# This might need adjustments based on your exact dataset
-shell_layout = nx.shell_layout(G)
-
-# Get sizes and colors for nodes
-sizes = [G.nodes[node]['size'] for node in G]
-colors = [G.nodes[node]['color'] for node in G]
-
-# Draw the network graph
-plt.figure(figsize=(14, 12))
-nx.draw_networkx_nodes(G, shell_layout, node_size=sizes,
-                       node_color=colors, alpha=0.6)
-nx.draw_networkx_edges(G, shell_layout, alpha=0.4)
-nx.draw_networkx_labels(G, shell_layout, font_size=8,
-                        font_color='black', font_weight='bold')
-
-# Add a title and display the plot
-plt.title('Network Graph of Users by False Positive Score (Shell Layout)', size=15)
-plt.show()
-
-# %%
-# Set node positions using an adjusted Spring layout
-# Increase k to push nodes further apart
-spring_pos = nx.spring_layout(G, k=0.15)
-
-# Draw the network graph using the adjusted layout
-plt.figure(figsize=(14, 12))
-nx.draw_networkx_nodes(G, spring_pos, node_size=sizes,
-                       node_color=colors, alpha=0.6)
-nx.draw_networkx_edges(G, spring_pos, alpha=0.4)
-nx.draw_networkx_labels(G, spring_pos, font_size=8,
-                        font_color='black', font_weight='bold')
-
-# Add a title and display the plot
-plt.title(
-    'Network Graph of Users by False Positive Score (Adjusted Spring Layout)', size=15)
-plt.show()
-
-
-# %%
-
-corr_matrix = high_fp_features.corr()
-plt.figure(figsize=(10, 8))
-sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap='coolwarm')
-plt.title('Correlation Matrix for High FP Users')
-plt.show()
-
-# %% [markdown]
-# - There is a significant overlap in file copying behavior irrespective of the time, indicated by high correlations between file copying features.
-# - Personality traits, particularly Agreeableness, seem to inversely correlate with file copying behaviors, suggesting a possible psychological aspect to the behaviors leading to false positives.
-
-# %%
-combined = pd.concat([high_fp, low_fp])
-scaler = StandardScaler()
-combined_scaled = scaler.fit_transform(combined[features])
-combined_scaled = pd.DataFrame(
-    combined_scaled, columns=features, index=combined.index)
-
-# Create a graph
-G = nx.Graph()
-
-# Add nodes with type based on FP score
-for user in combined.index:
-    G.add_node(user, fp=combined.loc[user, 'fp'])
-
-# Add edges based on cosine similarity between feature vectors
-similarity_matrix = cosine_similarity(combined_scaled)
-
-for i in range(len(similarity_matrix)):
-    for j in range(i + 1, len(similarity_matrix)):
-        if similarity_matrix[i, j] > 0.95:  # threshold for similarity
-            G.add_edge(combined.index[i], combined.index[j])
-
-# Draw the network graph
-plt.figure(figsize=(12, 12))
-pos = nx.spring_layout(G)
-nx.draw(G, pos, node_color=['red' if G.nodes[n]['fp'] >=
-        2 else 'green' for n in G.nodes], with_labels=True, node_size=50)
-plt.title('Network Graph of User Similarity Based on Key Features')
-plt.show()
-
-# %%
-high_fp_users = fds[fds['fp'] > 0]
-high_importance_features = ['FCwke', 'CDwke', 'JDwke', 'SDowh',
-                            'SDwh', 'C', 'CDowh', 'CDwh', 'JDowh', 'FCowh', 'N', 'FCwh', 'A']
-
-plt.figure(figsize=(10, 6))
-sns.histplot(high_fp_users['C'], kde=True, color='blue')
-plt.title('Distribution of C  among High FP Users')
-plt.xlabel('Openness')
-plt.ylabel('Frequency')
-plt.show()
-
-numeric_cols = high_fp_users.select_dtypes(
-    include=[np.number])  # only use numeric columns
-plt.figure(figsize=(12, 10))
-sns.heatmap(numeric_cols.corr(), annot=True, cmap='coolwarm')
-plt.title('Correlation Matrix for High FP Users')
-plt.show()
-
-corr = high_fp_users[high_importance_features].corr()
-
-# Plot heatmap
-plt.figure(figsize=(10, 8))
-sns.heatmap(corr, annot=True, cmap='coolwarm')
-plt.title('Correlation Heatmap of High-Importance Features')
-plt.show()
-
-# %%
-
-
-def merge_classification_results(models, actual_condition, predicted_condition, suffix):
-    classification_results = []
-    for model_data in models:
-        classification_results.append(model_data[(model_data['Actual'] == actual_condition) & (
-            model_data['Prediction'] == predicted_condition)])
-
-    merged_data = fds.copy()
-    for idx, result_data in enumerate(classification_results):
-        merged_data = pd.merge(merged_data, result_data[[
-                               'User']], on='User', how='left', suffixes=('', '_{}'.format(suffix[idx])))
-
-    return classification_results, merged_data
-
-
-fp_all, false_positives_data = merge_classification_results(
-    models, False, True, ['fp']*len(models))
-fn_all, false_negatives_data = merge_classification_results(
-    models, True, False, ['fn']*len(models))
-tp_all, true_positives_data = merge_classification_results(
-    models, True, True, ['tp']*len(models))
-tn_all, true_negatives_data = merge_classification_results(
-    models, False, False, ['tn']*len(models))
-
-# Merge model results
-
-
-def merge_intersection_data(fp_fn_tp_tn_all):
-    intersection_users = set(fp_fn_tp_tn_all[0]['User'])
-    for df in fp_fn_tp_tn_all[1:]:
-        intersection_users = intersection_users.intersection(df['User'])
-
-    merged_intersection_data = fds[fds['User'].isin(intersection_users)]
-
-    for df in fp_fn_tp_tn_all:
-        merged_intersection_data = pd.merge(
-            merged_intersection_data, df[['User']], on='User', how='left')
-
-    return merged_intersection_data
-
-
-merged_fp_data = merge_intersection_data(fp_all)
-merged_fn_data = merge_intersection_data(fn_all)
-merged_tp_data = merge_intersection_data(tp_all)
-merged_tn_data = merge_intersection_data(tn_all)
-
-# %%
-# Check
-for i, lst in enumerate(fp_all):
-    print(model_name[i])
-    print(len(lst))
-
-# %%
-print(len(merged_fp_data), len(merged_fn_data),
-      len(merged_tp_data), len(merged_tn_data))
-merged_fn_data
-
-# %% [markdown]
-# One user TNB1616 was always classified as a false negative for all 6 models.
-
-# %%
-false_positives_data
+#
+# ### Similar Features (FP ≈ Mal)
+# - `CDowh`, `FCowh`,`SDowh`: Similar frequency in cloud and suspicious domain visits outside working hours.
+# - Ineffective Features: Access to certain domains and file copy activity OUTSIDE WORKING HOURS on weekdays is common to both FP and malicious users, which may indicate the need for a re-evaluation of classification criteria.
+#
+#
+# ### Key Differentiators
+# - **More Activity by FP**: `FCwke`, `CDwke`, `JDwke` indicate higher weekend activities by FP users compared to malicious users.
+# - **Higher for Malicious Users**: `A`, `N`, `JDowh`: indicate malicious users have a significantly higher A and N score, while malicious users access Job Domains outside workhours on weekdays specifically more than FP users.
+#
+#
+# ### Implications
+# - Non-malicious weekend activities are often misclassified as malicious.
+# - The analysis suggests that the model may require adjustments to reduce false positives,
+# considering the legitimate use cases of non-malicious users, especially during weekends.
+#
+#
+# ## 2. False Positives (FP) vs. True Negatives (TN)
+# Explore similarities and differences to find out why high false positives (FP) are not classified as TN.
+#
+#
+# ### Similar Features (FP ≈ TN)
+# - `A`, `JDwe`: Similar values suggest these are reliable for identifying non-malicious users, should be weighted more in the model.
+#
+#
+# ### Features that are different but should be weighted less
+# - **Low Difference (FP << TN)**:
+#  - `N`: Lower values for some misclassified non-malicious users, suggesting that a low `N` may not indicate malicious intent.
+# - **High Difference (FP >> TN)**:
+#  - `FCwh`, `FCowh`: Users with high file copy activity during work hours and outside work hours on weekdays are misclassified as malicious
+#  - `CDowh`: Elevated cloud domain access outside work hours on weekdays.
+#
+# ### Insights
+# - Non-malicious misclassfied users have higher activity for features `FCwh`, `FCowh` and `CDowh`, these features might be unreliable and should be reviewed for its effectiveness in the model.
