@@ -72,13 +72,13 @@ pip install -r requirements.txt
 For instructions on using Docker to run our models and export model weights efficiently, please see the README in the `docker` branch. This branch includes specialized Docker configurations for our project tasks.
 
 ### Usage
-1. Automates raw external dataset 
+1. Download raw external dataset 
 - Automates dataset generation by downloading and extracting files from https://kilthub.cmu.edu/ndownloader/files, organizing them into /data/processed/raw_external folder.
 ```
 cd /dsa4263/python_scripts/data 
 python make_dataset.py
 ```
-2. Run notebooks in /dsa4263/notebooks
+2. Run jupyter notebooks in /dsa4263/notebooks
 
 1_EDA_RawData.ipynb - Initial exploratory data analysis on the raw data
 
