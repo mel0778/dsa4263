@@ -2,11 +2,11 @@
 
 ## Overview
 
-This branch contains Docker configurations tailored for specific tasks related to our project. It's designed with a focus on generating figures and exporting model weights efficiently. This README provides guidance on how to utilize this Docker configuration effectively.
+This branch contains Docker configurations tailored for specific tasks related to our project. It's designed with a focus on exporting model weights efficiently. This README provides guidance on how to utilize this Docker configuration effectively.
 
 ## Purpose
 
-The primary objective of this Docker setup is to streamline the process of generating figures and exporting model weights. It's optimized for these tasks rather than exploratory data analysis (EDA), which we believe is better suited for notebook environments or development containers.
+The primary objective of this Docker setup is to streamline the process of exporting model weights. It's optimized for these tasks rather than exploratory data analysis (EDA), which we believe is better suited for notebook environments or development containers.
 
 ## Contents
 

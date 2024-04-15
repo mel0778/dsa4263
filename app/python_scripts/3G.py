@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import roc_auc_score, roc_curve
 from itertools import permutations
 import pandas as pd
+import pickle
 
 # %% [markdown]
 # # Paths
